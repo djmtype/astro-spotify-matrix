@@ -1,0 +1,38 @@
+query MyPlaylists @netlify(id: """a38c55b2-0d64-49b8-901c-2849f868e034""", doc: """Your first Netlify Graph query, say hello!""") {
+  me {
+    spotify {
+      id
+      playlistsConnection {
+        nodes {
+          id
+          name
+          public
+          description
+          uri
+          externalUrls {
+            spotify
+          }
+          images {
+            height
+            width
+            url
+          }
+          tracksConnection {
+            nodes {
+              id
+              name
+              durationMs
+              previewUrl
+              artists {
+                name
+              }
+              externalUrls {
+                spotify
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
