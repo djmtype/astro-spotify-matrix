@@ -7,5 +7,5 @@ functions = 'functions'
   status = 200
 
 [graph]
-  codeGenerator = "netlify-builtin:astro"
+  codeGenerator = "netlify-builtin:default"
 
