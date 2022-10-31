@@ -1,50 +1,141 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../config';
+import Layout from "../layouts/Layout.astro"
+
+// import playlistData from "../data/playlists.json";
+
+// let allPlaylists = []
+
+// let allPlaylists = playlistData.data.me.spotify.playlistsConnection.nodes;
+
+// const name = allPlaylists.map((playlist) => { playlist.name })
+
+const request = await fetch("./src/data/playlists.json")
+let response = await request.json()
+
+const allPlaylists = response.data.me.spotify.playlistsConnection.nodes
+
+const playlists = allPlaylists.filter((data) => data.public !== false)
+
+// console.log(playlists)
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header title={SITE_TITLE} />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/pages/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to <a href="https://docs.astro.build/"
-					>read the docs
-				</a> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out <a
-					href="https://github.com/Charca/astro-blog-template"
-					>astro-blog-template
-				</a> by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<Layout>
+	<div class='entry-list'>
+
+
+		{
+			playlists.map((playlist) => (
+				<article class='entry'>
+				
+						<h2>
+							<a href={playlist.externalUrls.spotify}>{playlist.name}</a>
+						</h2>
+
+						<img
+							src={playlist.images[0].url}
+							loading='lazy'
+							width='250'
+							height='250'
+							alt={`Cover art for ${playlist.name}`}
+							class='playlist-img'
+						/>
+
+						<ol>
+							{playlist.tracksConnection.nodes.map((track) => (
+								<li>
+									<span class='track-name'>{track.name}</span>
+									<br />
+									{track.artists.map((artist) => (
+										<span>{artist.name}</span>
+									))}
+								</li>
+							))}
+						</ol>
+				</article>
+			))
+		}
+	</div>
+</Layout>
+
+
+
+<style>
+	:global(.entry-list) {
+		content-visibility: auto;
+  contain-intrinsic-size: 1000px; 
+	}
+	article {
+		margin-top: 3rem;
+		border-top: 1px dashed black;
+	}
+
+	.entry {
+		gap: 1.5rem;
+		display: grid;
+		/* grid-template-columns: minmax(25%, 250px) 1fr; */
+	}
+
+	@media (min-width: 60rem) {
+		.entry {
+			grid-template-columns: minmax(25%, 250px) 1fr;
+		}
+	}
+
+	h2 {
+		grid-column: 2;
+	}
+	ol {
+		padding-left: 1em;
+
+		margin-top: 0;
+	}
+
+	@media (min-width: 36rem) {
+		ol {
+			columns: 2;
+		}
+	}
+	ol > li {
+		padding: 0.3em 1em 0.3em 0.5em;
+	}
+
+	.track-name {
+		font-size: 1.25rem;
+		/* font-style: italic; */
+	}
+
+	.artist-name {
+		font-weight: 400;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 0.85rem;
+		font-family: Azeret Mono, Courier New, monospace;
+	}
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	input[type="search"] {
+		font-size: 2em;
+		padding: 0.25em 0.5em;
+		width: 100%;
+	}
+
+	form {
+		padding: 2rem 0;
+		position: sticky;
+		top: 0;
+		background: whitesmoke;
+	}
+
+	li {
+		-webkit-column-break-inside: avoid;
+		page-break-inside: avoid;
+		break-inside: avoid;
+	}
+
+	.is-hidden {
+		display: none;
+	}
+</style>

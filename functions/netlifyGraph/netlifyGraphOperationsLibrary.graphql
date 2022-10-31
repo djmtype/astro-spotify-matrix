@@ -1,3 +1,7 @@
+query ExampleQuery @netlify(id: """d8e27410-6f0c-4d05-9adf-e59f00539d10""", doc: """An empty query to start from""") {
+  __typename
+}
+
 query MyPlaylists @netlify(id: """a38c55b2-0d64-49b8-901c-2849f868e034""", doc: """Your first Netlify Graph query, say hello!""") {
   me {
     spotify {
